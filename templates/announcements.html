@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}Announcements - Northvale University{% endblock %}
+
+{% block content %}
+<h1>Announcements</h1>
+
+{% for a in announcements %}
+    <article class="card">
+        <h3>{{ a.title }}</h3>
+        <p class="date">{{ a.created_at.strftime('%d %B %Y') }}</p>
+        <p class="text">{{ a.content }}</p>
+    </article>
+{% else %}
+    <p>No announcements yet.</p>
+{% endfor %}
+{% endblock %}

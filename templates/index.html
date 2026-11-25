@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="hero">
+    <h1>Welcome to Northvale University</h1>
+    <p>
+        Founded in 1962, Northvale University is a fictional public university
+        with more than 8,000 students and five departments. We combine
+        practical teaching, modern laboratories and a friendly campus
+        community.
+    </p>
+</section>
+
+<h2>Latest announcements</h2>
+{% for a in announcements %}
+    <article class="card">
+        <h3>{{ a.title }}</h3>
+        <p class="date">{{ a.created_at.strftime('%d %B %Y') }}</p>
+        <p class="text">{{ a.content }}</p>
+    </article>
+{% else %}
+    <p>No announcements yet.</p>
+{% endfor %}
+
+<p><a href="{{ url_for('announcements') }}">See all announcements &rarr;</a></p>
+{% endblock %}

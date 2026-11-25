@@ -1,0 +1,137 @@
+/* style.css - one simple stylesheet for the whole site */
+
+/* Colors are defined once here, then reused everywhere */
+:root {
+    --blue: #1f3a5f;        /* dark blue: header, titles, buttons */
+    --blue-light: #2f5a8f;  /* hover color */
+    --gray: #f2f4f7;        /* page background */
+    --border: #d9dee5;
+    --text: #222b36;
+    --muted: #6b7684;
+    --red: #b3261e;
+}
+
+* { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    font-family: "Segoe UI", Arial, sans-serif;
+    line-height: 1.6;
+    color: var(--text);
+    background: var(--gray);
+    /* Sticky footer: footer stays at the bottom on short pages */
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+main { flex: 1; padding-top: 24px; padding-bottom: 40px; }
+
+.container { max-width: 960px; margin: 0 auto; padding: 0 16px; }
+
+h1, h2, h3 { color: var(--blue); line-height: 1.25; }
+h3 { margin: 0 0 4px; }
+a { color: var(--blue-light); }
+
+/* ----- Header and navigation ----- */
+.site-header { background: var(--blue); }
+
+.header-inner {
+    display: flex;
+    flex-wrap: wrap;          /* on small screens the nav goes under the logo */
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding-top: 12px;
+    padding-bottom: 12px;
+}
+
+.logo { color: #fff; font-size: 1.3rem; font-weight: bold; text-decoration: none; }
+
+nav { display: flex; flex-wrap: wrap; align-items: center; gap: 16px; }
+nav a, .link-button { color: #fff; text-decoration: none; }
+nav a:hover, .link-button:hover { text-decoration: underline; }
+
+/* ----- Cards ----- */
+.card {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin-bottom: 16px;
+}
+
+/* Departments: cards side by side, one column on phones */
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 16px;
+}
+.grid .card { margin-bottom: 0; }
+
+.date { color: var(--muted); font-size: 0.9rem; margin: 0 0 8px; }
+.text { white-space: pre-line; margin: 0; }  /* keeps line breaks of the content */
+
+.hero {
+    background: #fff;
+    border-left: 6px solid var(--blue);
+    border-radius: 8px;
+    padding: 8px 24px 16px;
+    margin-bottom: 24px;
+}
+
+/* ----- Messages ----- */
+.flash {
+    background: #e3edf8;
+    border: 1px solid #b7cde6;
+    border-radius: 6px;
+    padding: 10px 14px;
+    margin-bottom: 16px;
+}
+
+/* ----- Forms and buttons ----- */
+.form label { display: block; font-weight: bold; margin: 12px 0 4px; }
+
+.form input, .form textarea {
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font: inherit;
+}
+
+.button {
+    display: inline-block;
+    background: var(--blue);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 16px;
+    font: inherit;
+    text-decoration: none;
+    cursor: pointer;
+    margin-top: 12px;
+}
+.button:hover { background: var(--blue-light); }
+.button.danger { background: var(--red); }
+.button.secondary { background: #6b7684; }
+
+.actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.inline-form { display: inline; margin: 0; }
+
+.link-button {
+    background: none;
+    border: none;
+    font: inherit;
+    padding: 0;
+    cursor: pointer;
+}
+
+/* ----- Footer ----- */
+.site-footer {
+    background: var(--blue);
+    color: #cfd8e3;
+    text-align: center;
+    padding: 16px 0;
+    font-size: 0.9rem;
+}

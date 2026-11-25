@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}Departments - Northvale University{% endblock %}
+
+{% block content %}
+<h1>Departments</h1>
+
+<div class="grid">
+    {% for d in departments %}
+        <article class="card">
+            <h3>{{ d.name }}</h3>
+            <p>{{ d.description }}</p>
+        </article>
+    {% else %}
+        <p>No departments found.</p>
+    {% endfor %}
+</div>
+{% endblock %}

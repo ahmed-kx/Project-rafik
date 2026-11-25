@@ -1,0 +1,68 @@
+# docker-compose.yml - runs the 2 containers (web + db) with one command.
+# Values like ${POSTGRES_USER} are read from the .env file (see .env.example),
+# so no password is written in this file.
+
+services:
+
+  # ---------- PostgreSQL database ----------
+  db:
+    # Official image, with a fixed major version so updates cannot surprise us.
+    image: postgres:16
+    # Restart automatically after a crash or after the VM reboots.
+    restart: unless-stopped
+    # The official image reads these variables the first time it starts and
+    # creates the user, password and database for us.
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    # Named volume mounted on the folder where PostgreSQL stores its files.
+    # The volume lives outside the container, so the data survives
+    # "docker compose down" and the re-creation of the db container.
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    # No "ports:" section on purpose: PostgreSQL is NOT published to the VM or
+    # the outside network. Only the web container can reach it (through the
+    # private network below), which reduces the attack surface.
+    networks:
+      - app-net
+    # Marks the db as "healthy" only when PostgreSQL really accepts connections.
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  # ---------- Flask web application ----------
+  web:
+    # Build the image from the Dockerfile in this folder.
+    build: .
+    restart: unless-stopped
+    # DATABASE_URL uses "db" as the host name: Docker's built-in DNS on a
+    # user-defined network resolves the service name "db" to the db container.
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
+      SECRET_KEY: ${SECRET_KEY}
+      ADMIN_USERNAME: ${ADMIN_USERNAME}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD}
+    # The ONLY published port: VM port 5000 -> container port 5000.
+    # This is what lets the physical host open http://<VM-IP>:5000.
+    ports:
+      - "5000:5000"
+    # Start the web container only after the database is healthy.
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - app-net
+
+# User-defined bridge network: containers on it can find each other by service
+# name, and it is isolated from other Docker networks.
+networks:
+  app-net:
+    driver: bridge
+
+# Named volume managed by Docker (stored under /var/lib/docker/volumes).
+# It is NOT deleted by "docker compose down" (only by "down -v").
+volumes:
+  pgdata:

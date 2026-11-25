@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <!-- Makes the page scale correctly on phones -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}Northvale University{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<!-- Header and navigation: the same on every page -->
+<header class="site-header">
+    <div class="container header-inner">
+        <a class="logo" href="{{ url_for('index') }}">Northvale University</a>
+        <nav>
+            <a href="{{ url_for('index') }}">Home</a>
+            <a href="{{ url_for('departments') }}">Departments</a>
+            <a href="{{ url_for('announcements') }}">Announcements</a>
+            {% if session.get('is_admin') %}
+                <a href="{{ url_for('admin') }}">Admin</a>
+                <!-- Logout uses POST so that a simple link cannot log you out -->
+                <form class="inline-form" method="post" action="{{ url_for('logout') }}">
+                    <button type="submit" class="link-button">Logout</button>
+                </form>
+            {% else %}
+                <a href="{{ url_for('login') }}">Admin login</a>
+            {% endif %}
+        </nav>
+    </div>
+</header>
+
+<main class="container">
+    <!-- Flash messages (success / error) set by app.py -->
+    {% for message in get_flashed_messages() %}
+        <div class="flash">{{ message }}</div>
+    {% endfor %}
+
+    {% block content %}{% endblock %}
+</main>
+
+<footer class="site-footer">
+    <div class="container">
+        &copy; 2026 Northvale University (fictional) &middot; Cloud Computing project
+    </div>
+</footer>
+
+</body>
+</html>

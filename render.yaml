@@ -1,0 +1,37 @@
+# render.yaml - Render "Blueprint": describes the web service and the database.
+# Render reads this file when you create a Blueprint from the Git repository.
+# Check Render's current plans and free-tier limits yourself before deploying.
+
+services:
+  - type: web
+    name: university-web
+    runtime: python
+    # Run when deploying: install the libraries.
+    buildCommand: pip install -r requirements.txt
+    # Render gives the port in the $PORT variable, so we bind to it.
+    startCommand: gunicorn --bind 0.0.0.0:$PORT --workers 1 --threads 4 app:app
+    envVars:
+      # Python version used by Render (full version number required).
+      - key: PYTHON_VERSION
+        value: 3.12.3
+      # The connection string is taken from the Render database below,
+      # so we never copy a password by hand.
+      - key: DATABASE_URL
+        fromDatabase:
+          name: university-db
+          property: connectionString
+      # Render generates a random value for us.
+      - key: SECRET_KEY
+        generateValue: true
+      - key: ADMIN_USERNAME
+        value: admin
+      # sync: false = Render asks you for the value in the dashboard,
+      # so the password is not stored in Git.
+      - key: ADMIN_PASSWORD
+        sync: false
+
+databases:
+  - name: university-db
+    databaseName: university
+    user: uniuser
+    plan: free
